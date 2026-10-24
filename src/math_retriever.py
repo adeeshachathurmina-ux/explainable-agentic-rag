@@ -64,6 +64,9 @@ class HybridMathRetriever(BaseRetriever):
             embedding_model_name,
             device="cpu",
         )
+        # Remove internal Normalize layer to expose raw unnormalized vector magnitudes
+        if len(self.embedding_model) > 2 and "Normalize" in type(self.embedding_model[-1]).__name__:
+            self.embedding_model._modules.pop(str(len(self.embedding_model) - 1), None)
 
         # Initialize sparse TF-IDF vectorizer (unigrams and bigrams)
         self.tfidf_vectorizer = TfidfVectorizer(
