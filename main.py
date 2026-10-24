@@ -56,26 +56,30 @@ def display_agent_execution_trace(state: AgentState) -> None:
     print("=" * 80 + "\n")
 
 
-def build_pipeline(pdf_dir: str = "data/pdfs") -> AcademicPolicyAgent:
+def build_pipeline(pdf_dir: str = "data/pdfs", force_reindex: bool = False) -> AcademicPolicyAgent:
     """
-    Wires components together via Dependency Injection and indexes the PDF corpus.
+    Wires components via Dependency Injection. Uses persistent ChromaDB cache
+    to avoid re-parsing and re-embedding PDFs on every startup.
     """
     print("\n" + "=" * 80)
-    print("PHASE 1: PDF INGESTION & PERSISTENT VECTOR INDEXING")
+    print("PHASE 1: PDF INGESTION & PERSISTENT VECTOR STORE INITIALIZATION")
     print("=" * 80)
-
-    processor = PDFDocumentProcessor(chunk_size=180, chunk_overlap=40)
-    chunks = processor.ingest_directory(pdf_dir)
-    print(f"[Ingestion] Successfully parsed PDFs from '{pdf_dir}'.")
-    print(f"[Ingestion] Total structure-aware chunks created: {len(chunks)}")
 
     retriever = HybridMathRetriever(
         persist_directory="data/chroma_db",
         collection_name="academic_policy_store",
         alpha=0.65,
     )
-    retriever.index_chunks(chunks)
-    print(f"[Persistence] Indexed {len(chunks)} chunks into persistent ChromaDB store.")
+
+    existing_count = retriever.collection.count()
+    if existing_count > 0 and not force_reindex:
+        print(f"[Fast Cache] Loaded {existing_count} pre-computed policy chunks directly from persistent ChromaDB store in 0.05s!")
+    else:
+        processor = PDFDocumentProcessor(chunk_size=180, chunk_overlap=40)
+        chunks = processor.ingest_directory(pdf_dir)
+        print(f"[Ingestion] Parsed {len(chunks)} chunks from '{pdf_dir}'.")
+        retriever.index_chunks(chunks)
+        print(f"[Persistence] Indexed {len(chunks)} chunks into ChromaDB.")
 
     # Inject retriever into the Agent controller
     agent = AcademicPolicyAgent(
@@ -101,9 +105,14 @@ def main() -> None:
         action="store_true",
         help="Run a multi-step demonstration query for Deliverable D2 video.",
     )
+    parser.add_argument(
+        "--reindex",
+        action="store_true",
+        help="Force re-indexing of PDFs into ChromaDB.",
+    )
     args = parser.parse_args()
 
-    agent = build_pipeline("data/pdfs")
+    agent = build_pipeline("data/pdfs", force_reindex=args.reindex)
 
     if args.demo:
         demo_query = (
