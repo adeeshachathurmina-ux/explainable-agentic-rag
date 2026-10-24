@@ -1,0 +1,62 @@
+[
+  {
+    "id": "GT_01",
+    "question": "What is the assessment weighting for module DS205.3 Data Science with Python and what is the maximum group size?",
+    "ground_truth_answer": "Module DS205.3 is assessed via 60% Examination and 40% Coursework. The coursework is a group assignment with a maximum of 4 members per group.",
+    "expected_context_keywords": ["60%", "40%", "Coursework", "Examination", "4 members"]
+  },
+  {
+    "id": "GT_02",
+    "question": "What are the minimum passing criteria for a module under Clause 1.2?",
+    "ground_truth_answer": "Under Clause 1.2, a student must achieve at least 40% in the continuous coursework component and at least 40% in the final examination, with an overall aggregated mark of 40% or above.",
+    "expected_context_keywords": ["Clause 1.2", "40%", "continuous coursework", "final examination"]
+  },
+  {
+    "id": "GT_03",
+    "question": "What Cumulative GPA is required for First Class Honours and Second Class Upper Division?",
+    "ground_truth_answer": "According to Clause 2.1, First Class Honours requires a Final Cumulative GPA of 3.70 to 4.00 with zero academic misconduct offenses, while Second Class Upper Division requires a GPA of 3.30 to 3.69.",
+    "expected_context_keywords": ["Clause 2.1", "3.70", "4.00", "3.30", "3.69", "First Class"]
+  },
+  {
+    "id": "GT_04",
+    "question": "Can a submission in DS205.3 achieve a Distinction grade without an objective evaluation framework?",
+    "ground_truth_answer": "No. Both the DS205.3 assessment guidelines and Clause 2.2 explicitly state that submissions without an objective empirical evaluation framework cannot achieve a Distinction grade.",
+    "expected_context_keywords": ["Distinction", "objective", "evaluation framework", "Clause 2.2"]
+  },
+  {
+    "id": "GT_05",
+    "question": "What is the mandatory attendance requirement under Clause 3.1 and what happens if a student falls below it?",
+    "ground_truth_answer": "Under Clause 3.1, students must maintain a minimum of 80% attendance in lectures and laboratory sessions. Falling below 80% without an approved medical excuse results in being barred from sitting the final examination.",
+    "expected_context_keywords": ["Clause 3.1", "80%", "attendance", "barred", "final examination"]
+  },
+  {
+    "id": "GT_06",
+    "question": "If a student passes coursework with 45% but misses the final examination due to certified illness, what is the medical deferral procedure?",
+    "ground_truth_answer": "Under Clause 4.1, if a student passes coursework (40% or above) and misses the final exam due to illness, they must submit a valid Medical Certificate within 5 working days to receive an I-Grade (Incomplete) and sit the next exam as a First Attempt with uncapped marks.",
+    "expected_context_keywords": ["Clause 4.1", "5 working days", "Medical Certificate", "I-Grade", "First Attempt"]
+  },
+  {
+    "id": "GT_07",
+    "question": "What is the maximum grade cap for a repeat examination under Clause 4.2?",
+    "ground_truth_answer": "Under Clause 4.2, if a student fails a module or misses an examination without an approved medical deferral, the maximum grade awarded for the repeat attempt is capped at Grade C (40% - 49%, GPA 2.0).",
+    "expected_context_keywords": ["Clause 4.2", "Grade C", "40%", "49%", "2.0", "capped"]
+  },
+  {
+    "id": "GT_08",
+    "question": "What happens if a group uploads all their Python code to GitHub in a single-push commit history?",
+    "ground_truth_answer": "According to the DS205.3 Deliverable D1 guidelines and Clause 5.1, repositories with single-push histories will be flagged for an Academic Integrity Review, and confirmed offenses carry a 0% mark and disqualification from First Class Honours.",
+    "expected_context_keywords": ["single-push", "GitHub", "Academic Integrity", "Clause 5.1"]
+  },
+  {
+    "id": "GT_09",
+    "question": "What are the technical architectural requirements for the DS205.3 Explainable Agentic RAG system?",
+    "ground_truth_answer": "The system must use Python 3.10+, adhere to Modular OOP and Dependency Injection without monolithic scripts, implement an Agentic Loop (Observation, Reasoning, Action, Persistence), expose retrieval mathematics or hybrid retrieval, use a persistent vector store, and include an evaluation framework.",
+    "expected_context_keywords": ["Python 3.10", "Modular OOP", "Dependency Injection", "Agentic Loop", "Observation"]
+  },
+  {
+    "id": "GT_10",
+    "question": "What four stages must be demonstrated in the 5-minute unlisted YouTube video for Deliverable D2?",
+    "ground_truth_answer": "Deliverable D2 requires demonstrating four stages in a maximum 5-minute unlisted YouTube video: Ingestion (processing a PDF), Retrieval (printing retrieved chunks before generation), Synthesis (final grounded response), and Evaluation (running the evaluation script).",
+    "expected_context_keywords": ["Ingestion", "Retrieval", "Synthesis", "Evaluation", "5 minutes"]
+  }
+]
