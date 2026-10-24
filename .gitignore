@@ -2,4 +2,6 @@ venv/
 __pycache__/
 *.pyc
 .env
+.vscode/
 data/chroma_db/
+data/agent_state_history.json

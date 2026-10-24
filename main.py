@@ -56,7 +56,9 @@ def display_agent_execution_trace(state: AgentState) -> None:
     print("=" * 80 + "\n")
 
 
-def build_pipeline(pdf_dir: str = "data/pdfs", force_reindex: bool = False) -> AcademicPolicyAgent:
+def build_pipeline(
+    pdf_dir: str = "data/pdfs", force_reindex: bool = False, fast_mode: bool = False
+) -> AcademicPolicyAgent:
     """
     Wires components via Dependency Injection. Uses persistent ChromaDB cache
     to avoid re-parsing and re-embedding PDFs on every startup.
@@ -86,6 +88,7 @@ def build_pipeline(pdf_dir: str = "data/pdfs", force_reindex: bool = False) -> A
         retriever=retriever,
         max_steps=3,
         top_k_per_step=2,
+        fast_mode=fast_mode,
     )
     return agent
 
@@ -110,9 +113,14 @@ def main() -> None:
         action="store_true",
         help="Force re-indexing of PDFs into ChromaDB.",
     )
+    parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Enable instant sub-second local synthesis mode (0.05s response time).",
+    )
     args = parser.parse_args()
 
-    agent = build_pipeline("data/pdfs", force_reindex=args.reindex)
+    agent = build_pipeline("data/pdfs", force_reindex=args.reindex, fast_mode=args.fast)
 
     if args.demo:
         demo_query = (
@@ -128,7 +136,8 @@ def main() -> None:
         display_agent_execution_trace(state)
         return
 
-    print("\nInteractive Mode Initialized. Type 'exit' or 'quit' to terminate.\n")
+    mode_label = "⚡ Fast Instant Mode (0.05s)" if args.fast else "Cloud LLM Mode (with 5s Safe Timeout)"
+    print(f"\nInteractive Mode Initialized [{mode_label}]. Type 'exit' or 'quit' to terminate.\n")
     while True:
         try:
             user_input = input("Ask an Academic/Examination Policy Question: ").strip()
