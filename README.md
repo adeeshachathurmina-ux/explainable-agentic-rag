@@ -62,14 +62,17 @@ The sparse lexical similarity $S_{\text{sparse}}(\mathbf{q}_s, \mathbf{d}_s)$ is
 ### 3.2 Dense Vector Space Operations
 Given a query embedding $\mathbf{q} \in \mathbb{R}^n$ and document chunk embedding $\mathbf{d} \in \mathbb{R}^n$:
 
-1. **Raw Dot Product (Inner Product):**
-   $$\mathbf{q} \cdot \mathbf{d} = \sum_{i=1}^{n} q_i d_i$$
+**1. Raw Dot Product (Inner Product):**
 
-2. **Euclidean Vector Magnitude ($L_2$ Norm):**
-   $$\|\mathbf{q}\|_2 = \sqrt{\sum_{i=1}^{n} q_i^2}, \quad \|\mathbf{d}\|_2 = \sqrt{\sum_{i=1}^{n} d_i^2}$$
+$$\mathbf{q} \cdot \mathbf{d} = \sum_{i=1}^{n} q_i d_i$$
 
-3. **Explicit $L_2$ Normalization & Cosine Similarity:**
-   $$S_{\text{dense}}(\mathbf{q}, \mathbf{d}) = \frac{\mathbf{q} \cdot \mathbf{d}}{\|\mathbf{q}\|_2 \|\mathbf{d}\|_2}$$
+**2. Euclidean Vector Magnitude ($L_2$ Norm):**
+
+$$\lVert \mathbf{q} \rVert_2 = \sqrt{\sum_{i=1}^{n} q_i^2}, \quad \lVert \mathbf{d} \rVert_2 = \sqrt{\sum_{i=1}^{n} d_i^2}$$
+
+**3. Explicit $L_2$ Normalization & Cosine Similarity:**
+
+$$S_{\text{dense}}(\mathbf{q}, \mathbf{d}) = \frac{\mathbf{q} \cdot \mathbf{d}}{\lVert \mathbf{q} \rVert_2 \cdot \lVert \mathbf{d} \rVert_2}$$
 
 ### 3.3 Convex Hybrid Score Fusion
 To capture both semantic intent and exact regulatory clause numbers, the final ranking score combines dense and sparse similarities via a convex weighting parameter $\alpha \in [0, 1]$ (default $\alpha = 0.65$):
