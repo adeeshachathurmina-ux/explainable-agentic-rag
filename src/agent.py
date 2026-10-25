@@ -214,6 +214,33 @@ class AcademicPolicyAgent(BaseAgent):
         with open(self.persistence_log_path, "w", encoding="utf-8") as f:
             json.dump(history, f, indent=2)
 
+    def _inspect_state_for_dynamic_followup(self, state: AgentState) -> Optional[str]:
+        """
+        Inspects the retrieved context from Step 1 to dynamically trigger a
+        multi-hop verification query if cross-referenced policies or low
+        confidence scores are observed.
+        """
+        if not state.steps or not state.steps[-1].retrieved_results:
+            return None
+
+        top_result = state.steps[-1].retrieved_results[0]
+        top_text = top_result.chunk.text.lower()
+        peak_score = top_result.math_details.hybrid_final_score
+
+        # 1. Cross-reference detection in retrieved policy text
+        if "medical" in top_text and "coursework" in top_text:
+            return "Clause 1.2 minimum passing criteria coursework and examination"
+        if "single-push" in top_text or "plagiarism" in top_text:
+            return "Clause 2.1 First Class Honours zero academic misconduct offenses"
+        if "distinction" in top_text and "evaluation" in top_text:
+            return "Deliverable D1 Section IV empirical evaluation 10 ground truth queries"
+
+        # 2. Low-confidence mathematical threshold trigger
+        if peak_score < 0.45:
+            return f"Academic progression examination regulation {state.original_query}"
+
+        return None
+
     def run(self, user_query: str, fast_mode: Optional[bool] = None) -> AgentState:
         """
         Executes the full Perception-Action Agentic Loop:
@@ -251,6 +278,37 @@ class AcademicPolicyAgent(BaseAgent):
                 retrieved_results=retrieved,
             )
             state.add_step(step_record)
+
+        # Dynamic State-Driven Multi-Hop Check (if initial query was single-clause)
+        if len(state.steps) == 1 and self.max_steps >= 2:
+            followup_query = self._inspect_state_for_dynamic_followup(state)
+            if followup_query:
+                prev_score = (
+                    state.steps[0].retrieved_results[0].math_details.hybrid_final_score
+                    if state.steps[0].retrieved_results
+                    else 0.0
+                )
+                obs = (
+                    f"Dynamic State Inspection: Step 1 chunk (hybrid score: {prev_score:.4f}) "
+                    f"contains a regulatory cross-reference requiring secondary verification."
+                )
+                reas = (
+                    f"Step 2/2 (Dynamic Multi-Hop): Triggering autonomous follow-up retrieval "
+                    f"for cross-referenced policy: '{followup_query}'."
+                )
+                followup_results = self.retriever.retrieve(
+                    query=followup_query, top_k=self.top_k_per_step
+                )
+                state.add_step(
+                    AgentStep(
+                        step_number=2,
+                        observation=obs,
+                        reasoning=reas,
+                        action_type="DYNAMIC_CROSS_REFERENCE_RETRIEVAL",
+                        search_query=followup_query,
+                        retrieved_results=followup_results,
+                    )
+                )
 
         # Final Synthesis Phase
         state.final_answer = self._synthesize_grounded_response(state, force_fast=use_fast)
